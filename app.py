@@ -133,7 +133,7 @@ with st.sidebar:
             <p style="color: #4B8BBE; font-size: 1.1rem;">Developed by</p>
             <p style="font-size: 1.2rem;">Vikram & Ankit</p>
             <div style="margin: 1.5rem 0;">
-                <div style="font-size: 0.9rem; color: #2CA58D;">Version 4.0</div>
+                <div style="font-size: 0.9rem; color: #2CA58D;">Version 1.0.01</div>
                 <div style="font-size: 0.8rem; opacity: 0.8;">Multi-Horizon Forecasting</div>
             </div>
         </div>
@@ -325,6 +325,6 @@ with st.container():
 # Footer
 st.markdown("""
     <div style="margin-top: 3rem; text-align: center; opacity: 0.7;">
-        <small>© 2024 Delhi Grid Intelligence | Version 4.0</small>
+        <small>© 2024 Small Area Grid Intelligence | Version 1.0.01</small>
     </div>
 """, unsafe_allow_html=True)

@@ -1,10 +1,11 @@
-# app.py - YOUR EXACT UI WITH WORKING BACKEND
+# app.py - COMPLETE VERSION WITH SHAP
 import streamlit as st
 import joblib
 import pandas as pd
 import datetime
 import numpy as np
 import plotly.express as px
+import shap  # New import
 
 # Configure page
 st.set_page_config(
@@ -318,6 +319,44 @@ with st.container():
                             </div>
                         </div>
                     """, unsafe_allow_html=True)
+
+                # SHAP Feature Importance Visualization
+                with st.container():
+                    st.header("Model Explainability")
+                    
+                    # Create SHAP explainer
+                    explainer = shap.TreeExplainer(models["target_1h"])
+                    
+                    # Calculate SHAP values
+                    shap_values = explainer.shap_values(scaled_input)
+                    
+                    # Create importance DataFrame
+                    feature_importance = pd.DataFrame({
+                        "Feature": features,
+                        "Impact": np.abs(shap_values).mean(0)
+                    }).sort_values("Impact", ascending=False)
+
+                    # Create horizontal bar chart
+                    fig = px.bar(
+                        feature_importance,
+                        x="Impact",
+                        y="Feature",
+                        orientation='h',
+                        title="Feature Impact Analysis (SHAP Values)",
+                        labels={"Impact": "Mean Absolute Impact", "Feature": ""},
+                        color_discrete_sequence=["#2CA58D"]
+                    )
+
+                    fig.update_layout(
+                        plot_bgcolor="rgba(0,0,0,0)",
+                        paper_bgcolor="rgba(0,0,0,0)",
+                        font_color="white",
+                        height=600,
+                        yaxis={'categoryorder':'total ascending'},
+                        margin=dict(l=120, r=20, t=60, b=20)
+                    )
+
+                    st.plotly_chart(fig, use_container_width=True)
                     
             except Exception as e:
                 st.error(f"Prediction failed: {str(e)}")
@@ -325,6 +364,6 @@ with st.container():
 # Footer
 st.markdown("""
     <div style="margin-top: 3rem; text-align: center; opacity: 0.7;">
-        <small>© 2024 Small Area Grid Intelligence | Version 1.0.01</small>
+        <small>© 2024 Delhi Grid Intelligence | Version 1.0.01 </small>
     </div>
 """, unsafe_allow_html=True)

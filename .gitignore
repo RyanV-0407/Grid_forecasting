@@ -1,0 +1,15 @@
+# Virtual environments
+venv_311/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Other ignores (optional)
+.env
+.vscode/
+*.log

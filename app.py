@@ -1,11 +1,11 @@
-# app.py - COMPLETE VERSION WITH SHAP
+# app.py
 import streamlit as st
 import joblib
 import pandas as pd
 import datetime
 import numpy as np
 import plotly.express as px
-import shap  # New import
+import shap  # Impact of features on predictions
 
 # Configure page
 st.set_page_config(

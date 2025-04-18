@@ -9,17 +9,17 @@ from feature_engineering import add_time_features
 from hyperparameter_tuning import tune_hyperparameters
 
 def main():
-    # Load and prepare data
+    # Load and prepare data for time series Analysis
     df = pd.read_csv("realistic_energy_forecast_dataset.csv", parse_dates=["Timestamp"])
     df = add_time_features(df)
 
-    # Create forecast horizons
+    # Create forecast horizons for multi-horizon forecasting in grid stabilization.
     forecast_horizons = [1, 3, 6]
     for h in forecast_horizons:
         df[f"target_{h}h"] = df["Energy_Consumption_kWh"].shift(-h)
-    df = df.dropna()
+    df = df.dropna()  # Drop rows with missing values
 
-    # Define features and targets
+    # Define features and targets, in total 22 features
     features = [
         "Temperature_C", "Humidity_%", "Wind_Speed_mps", "Solar_Radiation_Wm2",
         "Industrial_Usage_kWh", "Residential_Usage_kWh", "Commercial_Usage_kWh",
@@ -33,18 +33,18 @@ def main():
     X = df[features]
     y = df[targets]
 
-    # Train-test split
+    # Train-test split - 80% train, 20% test
     train_size = int(len(df) * 0.8)
     X_train, X_test = X.iloc[:train_size], X.iloc[train_size:]
     y_train, y_test = y.iloc[:train_size], y.iloc[train_size:]
 
-    # Feature scaling
+    # RobustScaler for Feature Scaling and to handle outliers
     scaler = RobustScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     joblib.dump(scaler, "feature_scaler.pkl")
 
-    # Hyperparameter tuning
+    # Hyperparameter tuning using Optuna for LightGBM
     best_params = tune_hyperparameters(X_train_scaled, y_train[targets[0]], 
                                     X_test_scaled, y_test[targets[0]], n_trials=50)
 
@@ -67,7 +67,7 @@ def main():
             'reg_lambda': best_params.get('reg_lambda', 0.01),
             'verbose': -1
         }
-
+        
         model = lgb.train(
             params,
             train_data,
